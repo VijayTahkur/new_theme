@@ -1,0 +1,5 @@
+theme get --list -p=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 -s=green-pleasure-aps.myshopify.com
+
+theme get -p=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 -s=green-pleasure-aps.myshopify.com -t=109737738391
+
+theme open --env=production -p=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 -s=green-pleasure-aps.myshopify.com -t=109737738391  # will open http://your-store.myshopify.com?preview_theme_id=<your-theme-id>

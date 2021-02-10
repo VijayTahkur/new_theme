@@ -1,0 +1,51 @@
+<div class="product-thumbnail">
+  {% if settings.display_vendor %}
+    <span class="product-thumbnail__vendor">{{ product.vendor }}</span>
+  {% endif %}
+
+  <a href="{{ product.url | within: collection }}" class="product-thumbnail__title">{{ product.title }}</a>
+
+  {% if collection_handles contains 'coming-soon' %}
+    {% if settings.stickers_enabled == false %}
+      {{ 'collections.general.coming_soon' | t }}
+    {% endif %}
+  {% else %}
+    <span class="product-thumbnail__price price {% if product.compare_at_price_max > product.price %}sale{% endif %}">
+      {% if product.available %}
+        {% if product.price_varies and product.price_min > 0 %}
+          <small><em>{{ 'products.general.from' | t }}</em></small>
+        {% endif %}
+        {% if product.price_min > 0 %}
+          <span class="money">
+            {% render 'price-element', price: product.price_min %}
+          </span>
+        {% else %}
+          {{ settings.free_price_text }}
+        {% endif %}
+        {%- assign variant = product.selected_or_first_available_variant -%}
+        {% if variant.price < variant.compare_at_price %}
+          <span class="product-thumbnail__was-price was-price">
+            <span class="money">
+              {% render 'price-element', price: variant.compare_at_price %}
+            </span>
+          </span>
+        {% endif %}
+      {% else %}
+        <span class="product-thumbnail__sold-out sold-out">{{ 'products.product.sold_out' | t }}</span>
+      {% endif %}
+    </span>
+    <form method="post" action="/cart/add">
+  <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+  <input type="hidden" min="1" type="number" id="quantity" name="quantity" value="1"/>
+  
+  <button type="submit" name="add" 
+  class="button action_button button--add-to-cart "> 
+  <span class="text">Tilføj til kurv</span> 
+  <svg x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32" class="checkmark"> 
+  <path fill="none" stroke-width="2" stroke-linecap="square" stroke-miterlimit="10" d="M9,17l3.9,3.9c0.1,0.1,0.2,0.1,0.3,0L23,11"></path></svg>
+  </button>
+  
+  <!--input type="submit" value="Læg i kurv" class="btn" /-->
+</form>
+  {% endif %}
+</div>

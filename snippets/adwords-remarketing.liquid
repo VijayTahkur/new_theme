@@ -1,0 +1,57 @@
+{% comment %}
+Google Ads Dynamic Remarketing Script by Alex Czartoryski
+https://business.czarto.com/2017/02/07/shopify-dynamic-remarketing-setup/
+
+This version: Sept 30, 2020
+The latest version of this script available here:
+https://github.com/Czarto/ShopifyScripts/blob/master/snippets/adwords-remarketing.liquid
+{% endcomment %}
+
+{% comment %}Set to false if GTAG is already loaded on the page. Leave to true if unsure.{%endcomment%}
+{% assign load_gtag = true %}
+
+{% comment %} Enter your google conversion id below {% endcomment %}
+{% assign google_conversion_id = 434334046 %}
+
+{% assign shopify_store_country  = 'DK' %}
+
+
+{%if load_gtag %}
+<!-- Global site tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-{{ google_conversion_id }}"></script>
+{% endif %}
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-{{ google_conversion_id }}');
+</script>
+
+{% assign google_event = false %}
+{% assign google_items = false %}
+{% assign google_value = false %}
+{% if template contains 'cart' %}
+	{% assign google_event = 'add_to_cart' %}
+	{% capture google_items %}{% for item in cart.items %}{'id':'shopify_{{ shopify_store_country  }}_{{ item.product.id }}_{{ item.variant.id }}','google_business_vertical': 'retail'}{% unless forloop.last %}, {% endunless %}{% endfor %}{% endcapture %}
+	{% assign google_value = cart.total_price %}
+{% elsif template contains 'collection' %}
+	{% assign google_event = 'view_item_list' %}
+	{% capture google_items %}{% for item in collection.products limit:5 %}{'id':'shopify_{{ shopify_store_country  }}_{{ item.id }}_{{ item.variants.first.id }}','google_business_vertical': 'retail'}{% unless forloop.last %}, {% endunless %}{% endfor %}{% endcapture %}
+{% elsif template contains 'product' %}
+	{% assign google_event = 'view_item' %}
+	{% capture google_items %}{'id':'shopify_{{ shopify_store_country  }}_{{ product.id }}_{{ product.selected_or_first_available_variant.id }}','google_business_vertical': 'retail'}{% endcapture %}
+	{% assign google_value = product.selected_or_first_available_variant.price %}
+{% elsif template contains 'search' %}
+	{% assign google_event = 'view_search_results' %}
+	{% capture google_items %}{% for item in search.results limit:5 %}{'id':'shopify_{{ shopify_store_country  }}_{{ item.id }}_{{ item.variants.first.id }}','google_business_vertical': 'retail'}{% unless forloop.last %}, {% endunless %}{% endfor %}{% endcapture %}
+{% endif %}
+
+{% if google_event %}
+<script>
+	gtag('event', '{{ google_event }}', {
+	  'send_to': 'AW-{{ google_conversion_id }}',
+	  {% if google_value %}'value': '{{ google_value | divided_by: 100.0 }}',{% endif %}
+	  'items': [{{ google_items }}]
+	});
+</script>
+{% endif %}

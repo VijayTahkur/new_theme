@@ -1,0 +1,117 @@
+<style>
+
+.outerCountdown * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.outerCountdown {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color:#fff;
+  align-items: center;
+  background-color: #339933;
+  display: flex;
+}
+
+.countdownContainer {
+  color: #fff !important;
+  margin: 0 auto;
+  text-align: center;
+
+}
+
+.countdownContainer h1 {
+  font-weight: normal;
+  letter-spacing: .125rem;
+  text-transform: uppercase;
+    color: #fff !important;
+}
+
+.countdownContainer li {
+  display: inline-block;
+  font-size: 1.5em;
+  list-style-type: none;
+  padding: 1em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.countdownContainer li span {
+  display: block;
+  font-size: 4.5rem;
+  
+}
+
+
+@media all and (max-width: 768px) {
+  .countdownContainer h1 {
+    font-size: 1.5rem;
+    color: #fff; 
+  }
+  
+  .countdownContainer li {
+    font-size: 1.125rem;
+    padding: .75rem;
+  }
+  
+  .countdownContainer li span {
+    font-size: 3.375rem;
+  }
+}
+</style>
+
+<div class="outerCountdown">
+  <div class="countdownContainer">
+    <h1 id="headline">Bestil dine friske økologiske varer inden</h1>
+    <div id="countdown">
+      <ul>
+        <li><span id="days"></span>Dage</li>
+        <li><span id="hours"></span>Timer</li>
+        <li><span id="minutes"></span>Minutter</li>
+        <li><span id="seconds"></span>Sekunder</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+<script>
+
+    (function () {
+
+Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+}
+
+
+
+  const second = 1000,
+        minute = second * 60,
+        hour = minute * 60,
+        day = hour * 24;
+
+const runner = function() {
+  let now = new Date().getTime(),
+      distance = countDown - now;
+  document.getElementById("days").innerText = Math.floor(distance / (day)),
+    document.getElementById("hours").innerText = Math.floor((distance % (day)) / (hour)),
+    document.getElementById("minutes").innerText = Math.floor((distance % (hour)) / (minute)),
+    document.getElementById("seconds").innerText = Math.floor((distance % (minute)) / second);
+}
+
+
+  let deadline = "Nov 19, 2020 09:59:59";
+  let deadlineDate = new Date(deadline);
+  let now = new Date();
+  while (deadlineDate.valueOf() < now.valueOf()){
+    deadlineDate = deadlineDate.addDays(7)
+  }
+  let countDown = deadlineDate.getTime();
+  runner();
+      let x = setInterval(runner, 1000)
+  }());
+  </script>
